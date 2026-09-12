@@ -1,0 +1,275 @@
+{
+  "version": "1.2.0",
+  "project": "Saathi MSK Triage System",
+  "states": [
+    {
+      "state_code": "AS",
+      "state_name": "Assam",
+      "languages": ["Assamese", "Bengali", "Bodo", "English", "Hindi"],
+      "districts": [
+        {
+          "name": "Kamrup Metropolitan",
+          "livelihoods": ["Tea Garden Plucking", "Handloom Weaving", "Administrative / Desk", "Transport Driver", "Street Vendor"],
+          "primary_dialect": "Assamese"
+        },
+        {
+          "name": "Dibrugarh",
+          "livelihoods": ["Tea Garden Worker", "Petroleum & Refinery", "Paddy Farming", "River Ferry Operator", "Daily Wage Labor"],
+          "primary_dialect": "Assamese"
+        },
+        {
+          "name": "Jorhat",
+          "livelihoods": ["Tea Plantation Laborer", "Silk Weaving (Muga)", "Agricultural Farming", "Forestry", "Auto Driver"],
+          "primary_dialect": "Assamese"
+        },
+        {
+          "name": "Cachar",
+          "livelihoods": ["Paddy Cultivation", "Handloom Artisan", "Hill Transport Driver", "Tea Plucker", "Retail"],
+          "primary_dialect": "Bengali (Sylheti)"
+        },
+        {
+          "name": "Sonitpur",
+          "livelihoods": ["Tea Plucking", "Dairy & Livestock", "Fish Farming", "Paddy Cultivation", "Construction Worker"],
+          "primary_dialect": "Assamese"
+        }
+      ],
+      "dietary_guidelines": [
+        "Dhekia Xaak (Fiddlehead fern) stir-fried with mustard oil - Rich in iron and antioxidants for cartilage maintenance.",
+        "Small whole freshwater river fish (Moka / Chanda) eaten with bones for natural bioavailable calcium.",
+        "Warm fresh turmeric and ginger boiled infusion for reducing inflammatory cytokines."
+      ],
+      "ergonomic_rules": [
+        "Tea pluckers: Adjust head-strap (tumpline) load basket every 45 mins; avoid single-side cervical loading.",
+        "Farmers: Use 6-inch wooden low stool (tamul pira) during paddy weeding rather than deep prolonged squatting."
+      ]
+    },
+    {
+      "state_code": "AR",
+      "state_name": "Arunachal Pradesh",
+      "languages": ["Nishi", "Adi", "Monpa", "Hindi", "English"],
+      "districts": [
+        {
+          "name": "Papum Pare",
+          "livelihoods": ["Terraced Hill Farming", "Government Administration", "Handloom Weaving", "Timber Transport Driver"],
+          "primary_dialect": "Nishi"
+        },
+        {
+          "name": "Tawang",
+          "livelihoods": ["Yak Herding & High-altitude Pastoralism", "Apple / Kiwi Cultivation", "Army Portering", "Monastery Craft"],
+          "primary_dialect": "Monpa"
+        },
+        {
+          "name": "East Siang",
+          "livelihoods": ["Jhum / Hill Slope Agriculture", "Cane & Bamboo Craft", "River Boat Logistics", "Road Construction"],
+          "primary_dialect": "Adi"
+        },
+        {
+          "name": "West Kameng",
+          "livelihoods": ["Horticulture Farming", "Hill Bus / Taxi Driver", "Handicrafts", "Livestock Rearing"],
+          "primary_dialect": "Sherdukpen"
+        }
+      ],
+      "dietary_guidelines": [
+        "Chhurpi (fermented yak cheese) in traditional soups - high density calcium and protein for bone matrix.",
+        "Wild mountain nettle soup (Chhurpi-thukpa) - traditional anti-arthritic remedy."
+      ],
+      "ergonomic_rules": [
+        "Hill porters: Take 2-minute posture rest every 30 meters of steep downhill descent to unload patellofemoral joints.",
+        "Weavers: Utilize lumbar back support bench when working on loin looms."
+      ]
+    },
+    {
+      "state_code": "MN",
+      "state_name": "Manipur",
+      "languages": ["Meitei (Manipuri)", "Tangkhul", "Thadou", "English", "Hindi"],
+      "districts": [
+        {
+          "name": "Imphal West",
+          "livelihoods": ["Handloom / Phanek Weaving", "Vegetable Vendor (Ima Keithel)", "Desk Officer", "Auto / E-Rickshaw Driver"],
+          "primary_dialect": "Meitei"
+        },
+        {
+          "name": "Churachandpur",
+          "livelihoods": ["Hill Slope Cultivation", "Carpentry & Joinery", "Handloom", "Long-haul Hill Driver"],
+          "primary_dialect": "Thadou"
+        },
+        {
+          "name": "Ukhrul",
+          "livelihoods": ["Terraced Paddy Farming", "Black Pottery Craft", "Forest Gathering", "School Teacher"],
+          "primary_dialect": "Tangkhul"
+        },
+        {
+          "name": "Bishnupur",
+          "livelihoods": ["Loktak Lake Fisherman", "Water Chestnut Cultivation", "Paddy Farming", "Handicraft"],
+          "primary_dialect": "Meitei"
+        }
+      ],
+      "dietary_guidelines": [
+        "Ngari (fermented small fish) broths (Eromba / Kangsoi) - natural source of calcium and probiotics.",
+        "Yongchak (Tree bean) boiled with herbs - potent anti-inflammatory plant sterols."
+      ],
+      "ergonomic_rules": [
+        "Ima Keithel Market Vendors: Shift weight across sitting cushions every 30 mins; perform seated ankle pumps.",
+        "Loom weavers: Elevate foot pedal to maintain hip-knee angle at 90 degrees."
+      ]
+    },
+    {
+      "state_code": "ML",
+      "state_name": "Meghalaya",
+      "languages": ["Khasi", "Garo", "Pnar", "English", "Hindi"],
+      "districts": [
+        {
+          "name": "East Khasi Hills",
+          "livelihoods": ["Broom Grass Cultivation", "Areca Nut / Betel Leaf Harvester", "Sumo Hill Driver", "Quarry Worker", "Administrative"],
+          "primary_dialect": "Khasi"
+        },
+        {
+          "name": "West Garo Hills",
+          "livelihoods": ["Cashew Nut Cultivation", "Paddy Farmer", "Bamboo Weaving", "Border Trade Logistics"],
+          "primary_dialect": "Garo"
+        },
+        {
+          "name": "West Jaintia Hills",
+          "livelihoods": ["Lakadong Turmeric Farming", "Coal / Mineral Transport Driver", "Handicrafts", "Market Porter"],
+          "primary_dialect": "Pnar"
+        }
+      ],
+      "dietary_guidelines": [
+        "Lakadong Turmeric (7-9% high curcumin content) in warm broth daily for systemic anti-inflammatory protection.",
+        "Tungrymbai (fermented soybean paste) - plant protein and bioactive isoflavones."
+      ],
+      "ergonomic_rules": [
+        "Sumo hill drivers: Adjust driver seat backrest to 105 degrees; perform 3-minute knee extensions at refueling stops.",
+        "Turmeric harvesters: Avoid prolonged stooping; use knee pads with silicone padding during rhizome digging."
+      ]
+    },
+    {
+      "state_code": "MZ",
+      "state_name": "Mizoram",
+      "languages": ["Mizo", "English", "Hindi"],
+      "districts": [
+        {
+          "name": "Aizawl",
+          "livelihoods": ["Steep Slope Pedestrian Commuter", "Hill Taxi Driver", "Civil Servant", "Puan Weaving Artisan"],
+          "primary_dialect": "Mizo"
+        },
+        {
+          "name": "Lunglei",
+          "livelihoods": ["Ginger & Chilli Cultivation", "Timber Logistics", "Handloom", "Construction"],
+          "primary_dialect": "Mizo"
+        },
+        {
+          "name": "Champhai",
+          "livelihoods": ["Grape Vineyard Farming", "Cross-Border Trade Porter", "Paddy Cultivation"],
+          "primary_dialect": "Mizo"
+        }
+      ],
+      "dietary_guidelines": [
+        "Bai (steamed vegetable broth with fermented pork skin or soda) featuring bamboo shoots and wild mountain greens.",
+        "Bekang (fermented soybean) as daily source of amino acids and calcium."
+      ],
+      "ergonomic_rules": [
+        "Aizawl hill walkers: Shorten stride length by 20% on steep staircase climbs to minimize knee shear forces.",
+        "Weavers: Stretch cervical spine backwards (chin tucks) for 15 seconds every hour."
+      ]
+    },
+    {
+      "state_code": "NL",
+      "state_name": "Nagaland",
+      "languages": ["Nagamese", "Ao", "Angami", "Sumi", "Lotha", "English"],
+      "districts": [
+        {
+          "name": "Kohima",
+          "livelihoods": ["Terrace Paddy Farmer", "State Secretariat Staff", "Hill Driver", "Traditional Shawl Weaver"],
+          "primary_dialect": "Angami"
+        },
+        {
+          "name": "Dimapur",
+          "livelihoods": ["Commercial Transport Operator", "Market Vendor", "Warehousing / Loading Laborer", "Rail Goods Handler"],
+          "primary_dialect": "Nagamese"
+        },
+        {
+          "name": "Mokokchung",
+          "livelihoods": ["Cardamom & Tea Grower", "Livestock Farming", "Wood Carving", "Teacher"],
+          "primary_dialect": "Ao"
+        }
+      ],
+      "dietary_guidelines": [
+        "Axone / Akhuni (fermented soy cake) cooked with wild greens - rich in natural peptide antioxidants.",
+        "Boiled pumpkin leaves and colocasia stems rich in magnesium and vitamin K."
+      ],
+      "ergonomic_rules": [
+        "Porters: Distribute basket weight evenly across both shoulders rather than head-strap alone.",
+        "Field workers: Swap leg positions when kneeling on agricultural slopes."
+      ]
+    },
+    {
+      "state_code": "SK",
+      "state_name": "Sikkim",
+      "languages": ["Nepali", "Bhutia", "Lepcha", "English", "Hindi"],
+      "districts": [
+        {
+          "name": "East Sikkim (Gangtok)",
+          "livelihoods": ["Tourism Driver / Taxi", "Organic Vegetable Vendor", "Administrative Desk", "Hotel Staff"],
+          "primary_dialect": "Nepali"
+        },
+        {
+          "name": "South Sikkim (Namchi)",
+          "livelihoods": ["Large Cardamom Farmer", "Dairy Worker", "Tea Estate Worker (Temi)", "Masonry"],
+          "primary_dialect": "Nepali"
+        },
+        {
+          "name": "West Sikkim (Gyalshing)",
+          "livelihoods": ["Terraced Organic Agriculture", "Trekking Guide / Porter", "Cardamom Processing"],
+          "primary_dialect": "Lepcha"
+        }
+      ],
+      "dietary_guidelines": [
+        "Kinema (fermented organic soybean) - high protein density and bone-protective peptides.",
+        "Gundruk (fermented leafy brassica greens) soup - natural digestive probiotics and calcium."
+      ],
+      "ergonomic_rules": [
+        "Trekking guides: Use bilateral trekking poles during downhill hikes to reduce peak knee impact by 24%.",
+        "Cardamom pickers: Perform wrist flexor and extensor stretches before starting morning harvest."
+      ]
+    },
+    {
+      "state_code": "TR",
+      "state_name": "Tripura",
+      "languages": ["Bengali", "Kokborok", "English", "Hindi"],
+      "districts": [
+        {
+          "name": "West Tripura (Agartala)",
+          "livelihoods": ["Rubber Plantation Tapper", "Bamboo / Cane Artisan", "Rickshaw Puller", "Civil Servant"],
+          "primary_dialect": "Bengali"
+        },
+        {
+          "name": "Gomati",
+          "livelihoods": ["Rubber Tapping", "Fishery", "Paddy Agriculture", "Handicrafts"],
+          "primary_dialect": "Kokborok"
+        },
+        {
+          "name": "North Tripura",
+          "livelihoods": ["Tea Plucker", "Paddy Farmer", "Small Trade / Shopkeeper", "Transport Driver"],
+          "primary_dialect": "Bengali"
+        }
+      ],
+      "dietary_guidelines": [
+        "Berma (fermented dry small fish) added to boiled seasonal vegetable stew (Chakhwi).",
+        "Moringa leaves (Sajne) and green drumstick pods cooked in lentil broth for bone mineral density."
+      ],
+      "ergonomic_rules": [
+        "Rubber tappers: Use two-handed grip on tapping knife to avoid unilateral wrist repetitive strain.",
+        "Bamboo artisans: Take 5-minute hand shakeouts and finger extension exercises every hour."
+      ]
+    }
+  ],
+  "occupational_risk_matrix": {
+    "Tea Garden Plucking": { "risk_bias": "Yellow", "high_risk_joints": ["Cervical Spine", "Knee", "Shoulder"], "ergonomic_hazard": "Tumpline basket head-strap + 8 hrs continuous slope standing" },
+    "Hill Transport Driver": { "risk_bias": "Yellow", "high_risk_joints": ["Spine", "Knee"], "ergonomic_hazard": "Whole-body road vibration + persistent knee flexion clutch operation" },
+    "Terraced Hill Farming": { "risk_bias": "Yellow", "high_risk_joints": ["Knee", "Hip", "Spine"], "ergonomic_hazard": "Steep slope ascent with load + prolonged stooping" },
+    "Handloom Weaving": { "risk_bias": "Yellow", "high_risk_joints": ["Wrist", "Shoulder", "Spine"], "ergonomic_hazard": "Repetitive shuttle throwing + seated lack of lumbar support" },
+    "Rubber Plantation Tapping": { "risk_bias": "Yellow", "high_risk_joints": ["Wrist", "Shoulder"], "ergonomic_hazard": "Forceful overhead cutting + repetitive wrist flexion" },
+    "Administrative / Desk": { "risk_bias": "Green", "high_risk_joints": ["Cervical Spine"], "ergonomic_hazard": "Static seated posture + forward head tilt" }
+  }
+}
