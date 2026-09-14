@@ -12,10 +12,7 @@ import {
   Calendar,
 } from "lucide-react";
 
-import {
-  PatientScreening,
-  updateSpecialistNotes,
-} from "@/lib/mock_database";
+import { PatientScreening } from "@/lib/mock_database";
 
 import { KinematicCurveViewer } from "./KinematicCurveViewer";
 
@@ -36,18 +33,39 @@ export const PatientDossierModal: React.FC<PatientDossierModalProps> = ({
   );
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleSignOff = () => {
-    setIsSaving(true);
+  const handleSignOff = async () => {
+  setIsSaving(true);
 
-    updateSpecialistNotes(screening.id, notes, true);
+  try {
+    const response = await fetch("/api/sync", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: screening.id,
+        notes,
+        signedOff: true,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data?.error || "Failed to save specialist sign-off."
+      );
+    }
 
     setIsSignedOff(true);
-
-    setTimeout(() => {
-      setIsSaving(false);
-      onSaved();
-    }, 400);
-  };
+    onSaved();
+  } catch (error) {
+    console.error("Sign-off failed:", error);
+    alert("Failed to save referral sign-off. Please try again.");
+  } finally {
+    setIsSaving(false);
+  }
+};
 
   const getBadgeClass = (tier: string) => {
     switch (tier) {
