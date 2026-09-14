@@ -2,90 +2,191 @@
 
 import React from "react";
 
+interface SensorPoint {
+  time_ms: number;
+  angle_deg: number;
+  velocity_deg_s: number;
+  vag_energy_rms: number;
+}
+
 interface KinematicCurveViewerProps {
   rom: number;
   thetaCrit: number;
   peakVelocity: number;
   jointName: string;
+  timeSeries: SensorPoint[];
 }
 
-export const KinematicCurveViewer: React.FC<KinematicCurveViewerProps> = ({
+export const KinematicCurveViewer: React.FC<
+  KinematicCurveViewerProps
+> = ({
   rom,
   thetaCrit,
   peakVelocity,
   jointName,
+  timeSeries,
 }) => {
-  // Generate a realistic 100-point time-series curve reflecting the actual measured ROM and θ_crit
-  const pointsCount = 100;
-  const width = 600;
-  const height = 240;
-  const padding = { top: 20, right: 30, bottom: 35, left: 45 };
+  const width = 700;
+  const height = 360;
+
+  const padding = {
+    top: 45,
+    right: 35,
+    bottom: 55,
+    left: 55,
+  };
 
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
 
-  const points: { x: number; y: number; angle: number; velocity: number }[] = [];
-
-  for (let i = 0; i < pointsCount; i++) {
-    const t = (i / (pointsCount - 1)) * 2.0; // 0 to 2 seconds
-    // Base bell excursion
-    let angle = rom * Math.pow(Math.sin((Math.PI * t) / 2.0), 2);
-
-    // If θ_crit is present (>0), inject a visible hesitation plateau/dip
-    if (thetaCrit > 0 && angle >= thetaCrit * 0.85 && angle <= thetaCrit * 1.15 && t > 0.4 && t < 1.3) {
-      angle -= (thetaCrit * 0.18) * Math.sin(((angle - thetaCrit * 0.85) / (thetaCrit * 0.3)) * Math.PI);
-    }
-
-    const velocity = (peakVelocity * Math.sin(Math.PI * t)).toFixed(1);
-
-    const x = padding.left + (i / (pointsCount - 1)) * plotWidth;
-    const y = padding.top + plotHeight - (Math.max(0, angle) / 160.0) * plotHeight;
-
-    points.push({ x, y, angle, velocity: parseFloat(velocity) });
+  if (!timeSeries || timeSeries.length === 0) {
+    return (
+      <div className="bg-slate-900 text-white p-6 rounded-2xl">
+        No synchronized sensor data available.
+      </div>
+    );
   }
 
-  const pathD = points.reduce((acc, curr, idx) => {
-    return `${acc} ${idx === 0 ? "M" : "L"} ${curr.x.toFixed(1)} ${curr.y.toFixed(1)}`;
-  }, "");
+  const maxTime =
+    Math.max(...timeSeries.map((point) => point.time_ms)) || 800;
 
-  // Find position for θ_crit marker
-  let critPoint = null;
-  if (thetaCrit > 0) {
-    critPoint = points.find((p) => Math.abs(p.angle - thetaCrit) < 6.0) || points[Math.floor(pointsCount * 0.45)];
-  }
+  const maxAngle = 160;
+
+  const maxVelocity = Math.max(
+    peakVelocity,
+    ...timeSeries.map((point) => point.velocity_deg_s)
+  );
+
+  const maxVag = Math.max(
+    100,
+    ...timeSeries.map((point) => point.vag_energy_rms)
+  );
+
+  const getX = (time: number) =>
+    padding.left + (time / maxTime) * plotWidth;
+
+  const getAngleY = (angle: number) =>
+    padding.top +
+    plotHeight -
+    (Math.max(0, Math.min(angle, maxAngle)) / maxAngle) *
+      plotHeight;
+
+  const getVelocityY = (velocity: number) =>
+    padding.top +
+    plotHeight -
+    (Math.max(0, velocity) / maxVelocity) *
+      plotHeight;
+
+  /* --------------------------------
+     ANGLE PATH
+  -------------------------------- */
+
+  const anglePath = timeSeries
+    .map((point, index) => {
+      const x = getX(point.time_ms);
+      const y = getAngleY(point.angle_deg);
+
+      return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    })
+    .join(" ");
+
+  /* --------------------------------
+     VELOCITY PATH
+  -------------------------------- */
+
+  const velocityPath = timeSeries
+    .map((point, index) => {
+      const x = getX(point.time_ms);
+      const y = getVelocityY(point.velocity_deg_s);
+
+      return `${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`;
+    })
+    .join(" ");
+
+  /* --------------------------------
+     FIND θcrit SENSOR POINT
+  -------------------------------- */
+
+  const critPoint = timeSeries.reduce((closest, point) => {
+    const currentDifference = Math.abs(
+      point.angle_deg - thetaCrit
+    );
+
+    const closestDifference = Math.abs(
+      closest.angle_deg - thetaCrit
+    );
+
+    return currentDifference < closestDifference
+      ? point
+      : closest;
+  }, timeSeries[0]);
+
+  const critX = getX(critPoint.time_ms);
+  const critY = getAngleY(critPoint.angle_deg);
 
   return (
     <div className="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 shadow-inner">
-      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+
+      {/* --------------------------------
+          HEADER
+      -------------------------------- */}
+
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+
         <div>
           <h4 className="font-bold text-sm text-slate-100 flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block"></span>
-            Dynamic Excursion Arc: {jointName} Flexion-Extension (100 Hz Dual-IMU)
+            <span className="w-2.5 h-2.5 rounded-full bg-blue-400 inline-block" />
+
+            Dynamic Excursion Arc: {jointName} Flexion-Extension
           </h4>
-          <p className="text-xs text-slate-400">
-            Relative Angle θ_rel = θ_proximal - θ_distal over 2.0s functional movement
+
+          <p className="text-xs text-slate-400 mt-1">
+            Synchronized Dual-IMU sensor time-series
           </p>
         </div>
 
-        <div className="flex items-center gap-4 text-xs font-semibold">
-          <span className="text-blue-400">● Angle (ROM: {rom.toFixed(1)}°)</span>
-          <span className="text-emerald-400">-- Peak Vel: {peakVelocity.toFixed(1)} °/s</span>
+        <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+
+          <span className="text-blue-400">
+            ● Angle
+          </span>
+
+          <span className="text-emerald-400">
+            ┄ Velocity
+          </span>
+
+          <span className="text-amber-400">
+            ▮ VAG Energy
+          </span>
+
           {thetaCrit > 0 && (
             <span className="text-rose-400 bg-rose-950/80 border border-rose-800 px-2 py-0.5 rounded-md">
               ⚠ θ_crit: {thetaCrit.toFixed(1)}°
             </span>
           )}
+
         </div>
       </div>
 
-      {/* SVG Canvas Plot */}
+      {/* --------------------------------
+          GRAPH
+      -------------------------------- */}
+
       <div className="relative overflow-x-auto">
-        <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
-          {/* Horizontal Grid Lines */}
-          {[0, 40, 80, 120, 160].map((val) => {
-            const y = padding.top + plotHeight - (val / 160.0) * plotHeight;
+
+        <svg
+          viewBox={`0 0 ${width} ${height}`}
+          className="w-full h-auto min-w-[650px]"
+        >
+
+          {/* ANGLE GRID */}
+
+          {[0, 40, 80, 120, 160].map((value) => {
+            const y = getAngleY(value);
+
             return (
-              <g key={val}>
+              <g key={value}>
+
                 <line
                   x1={padding.left}
                   y1={y}
@@ -95,91 +196,274 @@ export const KinematicCurveViewer: React.FC<KinematicCurveViewerProps> = ({
                   strokeDasharray="4 4"
                   strokeWidth="0.8"
                 />
-                <text x={padding.left - 8} y={y + 3} fill="#64748b" fontSize="10" textAnchor="end">
-                  {val}°
+
+                <text
+                  x={padding.left - 8}
+                  y={y + 3}
+                  fill="#64748b"
+                  fontSize="10"
+                  textAnchor="end"
+                >
+                  {value}°
                 </text>
+
               </g>
             );
           })}
 
-          {/* Time axis ticks */}
-          {[0, 0.5, 1.0, 1.5, 2.0].map((sec) => {
-            const x = padding.left + (sec / 2.0) * plotWidth;
+          {/* TIME AXIS */}
+
+          {timeSeries.map((point) => {
+            const x = getX(point.time_ms);
+
             return (
-              <g key={sec}>
-                <line x1={x} y1={padding.top} x2={x} y2={height - padding.bottom} stroke="#1e293b" strokeWidth="1" />
-                <text x={x} y={height - padding.bottom + 16} fill="#64748b" fontSize="10" textAnchor="middle">
-                  {sec.toFixed(1)}s
+              <g key={point.time_ms}>
+
+                <line
+                  x1={x}
+                  y1={padding.top}
+                  x2={x}
+                  y2={height - padding.bottom}
+                  stroke="#1e293b"
+                  strokeWidth="1"
+                />
+
+                <text
+                  x={x}
+                  y={height - padding.bottom + 18}
+                  fill="#64748b"
+                  fontSize="9"
+                  textAnchor="middle"
+                >
+                  {(point.time_ms / 1000).toFixed(1)}s
                 </text>
+
               </g>
             );
           })}
 
-          {/* Area Fill */}
+          {/* VAG ENERGY BARS */}
+
+          {timeSeries.map((point) => {
+
+            const x = getX(point.time_ms);
+
+            const barHeight =
+              (point.vag_energy_rms / maxVag) *
+              plotHeight *
+              0.35;
+
+            const y =
+              padding.top +
+              plotHeight -
+              barHeight;
+
+            return (
+              <rect
+                key={`vag-${point.time_ms}`}
+                x={x - 8}
+                y={y}
+                width="16"
+                height={barHeight}
+                fill="#f59e0b"
+                opacity="0.35"
+                rx="2"
+              />
+            );
+          })}
+
+          {/* ANGLE CURVE */}
+
           <path
-            d={`${pathD} L ${width - padding.right} ${padding.top + plotHeight} L ${padding.left} ${padding.top + plotHeight} Z`}
-            fill="url(#blueGradient)"
-            opacity="0.25"
+            d={anglePath}
+            fill="none"
+            stroke="#38bdf8"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
 
-          {/* Angle Curve Line */}
-          <path d={pathD} fill="none" stroke="#38bdf8" strokeWidth="2.5" strokeLinecap="round" />
+          {/* VELOCITY CURVE */}
 
-          {/* Critical Hesitation Marker */}
-          {critPoint && (
-            <g>
-              <line
-                x1={critPoint.x}
-                y1={padding.top}
-                x2={critPoint.x}
-                y2={height - padding.bottom}
-                stroke="#f43f5e"
-                strokeWidth="1.5"
-                strokeDasharray="3 3"
-              />
-              <circle cx={critPoint.x} cy={critPoint.y} r="6" fill="#f43f5e" stroke="#fff" strokeWidth="2" />
-              <rect
-                x={critPoint.x - 45}
-                y={critPoint.y - 30}
-                width="90"
-                height="20"
-                rx="4"
-                fill="#881337"
-                stroke="#f43f5e"
+          <path
+            d={velocityPath}
+            fill="none"
+            stroke="#34d399"
+            strokeWidth="1.8"
+            strokeDasharray="5 4"
+            strokeLinecap="round"
+          />
+
+          {/* ACTUAL SENSOR POINTS */}
+
+          {timeSeries.map((point) => {
+
+            const x = getX(point.time_ms);
+            const y = getAngleY(point.angle_deg);
+
+            return (
+              <circle
+                key={`angle-${point.time_ms}`}
+                cx={x}
+                cy={y}
+                r="3.5"
+                fill="#38bdf8"
+                stroke="#ffffff"
                 strokeWidth="1"
               />
+            );
+          })}
+
+          {/* θcrit MARKER */}
+
+          {thetaCrit > 0 && (
+            <g>
+
+              <line
+                x1={critX}
+                y1={padding.top}
+                x2={critX}
+                y2={height - padding.bottom}
+                stroke="#f43f5e"
+                strokeWidth="2"
+                strokeDasharray="5 4"
+              />
+
+              <circle
+                cx={critX}
+                cy={critY}
+                r="7"
+                fill="#f43f5e"
+                stroke="#ffffff"
+                strokeWidth="2"
+              />
+
+              <rect
+                x={Math.max(
+                  padding.left,
+                  critX - 55
+                )}
+                y={Math.max(
+                  padding.top,
+                  critY - 42
+                )}
+                width="110"
+                height="24"
+                rx="5"
+                fill="#881337"
+                stroke="#f43f5e"
+              />
+
               <text
-                x={critPoint.x}
-                y={critPoint.y - 16}
+                x={critX}
+                y={Math.max(
+                  padding.top + 16,
+                  critY - 25
+                )}
                 fill="#fecdd3"
-                fontSize="9"
+                fontSize="10"
                 fontWeight="bold"
                 textAnchor="middle"
               >
                 θ_crit = {thetaCrit.toFixed(1)}°
               </text>
+
             </g>
           )}
 
-          <defs>
-            <linearGradient id="blueGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#38bdf8" />
-              <stop offset="100%" stopColor="#38bdf8" stopOpacity="0" />
-            </linearGradient>
-          </defs>
+          {/* AXIS LABELS */}
+
+          <text
+            x={padding.left}
+            y={height - 8}
+            fill="#64748b"
+            fontSize="10"
+          >
+            Time (seconds)
+          </text>
+
+          <text
+            x="15"
+            y={padding.top}
+            fill="#64748b"
+            fontSize="10"
+            transform={`rotate(-90 15 ${padding.top})`}
+          >
+            Angle / Velocity
+          </text>
+
         </svg>
       </div>
 
-      <div className="mt-2 text-[11px] text-slate-400 flex items-center justify-between">
-        <span>Kinematic sampling rate: 100 Hz (10 ms strict I2C interval)</span>
-        {thetaCrit > 0 ? (
-          <span className="text-rose-300 font-medium">
-            Significant pain-guarding hesitation detected in 30°–60° arc.
-          </span>
-        ) : (
-          <span className="text-emerald-300 font-medium">Smooth bell-shaped excursion profile.</span>
-        )}
+      {/* --------------------------------
+          SENSOR SUMMARY
+      -------------------------------- */}
+
+      <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-[11px]">
+
+        <div className="bg-slate-800 rounded-lg p-2">
+          <p className="text-slate-400">
+            Measured ROM
+          </p>
+
+          <p className="text-blue-400 font-bold">
+            {rom.toFixed(1)}°
+          </p>
+        </div>
+
+        <div className="bg-slate-800 rounded-lg p-2">
+          <p className="text-slate-400">
+            Peak Velocity
+          </p>
+
+          <p className="text-emerald-400 font-bold">
+            {peakVelocity.toFixed(1)} °/s
+          </p>
+        </div>
+
+        <div className="bg-slate-800 rounded-lg p-2">
+          <p className="text-slate-400">
+            θ_crit
+          </p>
+
+          <p className="text-rose-400 font-bold">
+            {thetaCrit.toFixed(1)}°
+          </p>
+        </div>
+
+        <div className="bg-slate-800 rounded-lg p-2">
+          <p className="text-slate-400">
+            Sensor Samples
+          </p>
+
+          <p className="text-amber-400 font-bold">
+            {timeSeries.length}
+          </p>
+        </div>
+
       </div>
+
+      {/* --------------------------------
+          FOOTER
+      -------------------------------- */}
+
+      <div className="mt-3 text-[11px] text-slate-400 flex flex-col gap-1">
+
+        <span>
+          Acquisition pipeline:{" "}
+          <strong className="text-slate-300">
+            100 Hz
+          </strong>{" "}
+          • synchronized Dual-IMU measurements
+        </span>
+
+        <span className="text-rose-300 font-medium">
+          ⚠ Hesitation detected around θ_crit ={" "}
+          {thetaCrit.toFixed(1)}°.
+        </span>
+
+      </div>
+
     </div>
   );
 };
